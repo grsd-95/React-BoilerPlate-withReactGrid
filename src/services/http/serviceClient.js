@@ -119,6 +119,7 @@ class HttpService {
   patch(url, d, o = {}) {
     return this.execute("patch", url, { ...o, payload: d });
   }
+  
 
   delete(url, o = {}) {
     return this.execute("delete", url, o);
