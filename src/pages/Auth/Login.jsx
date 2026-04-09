@@ -31,24 +31,17 @@ const Login = () => {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = async (data) => {
-    debugger;
     try {
-      debugger;
       setIsLoading(true);
       setError('');
-      debugger;
+
       await login(data.email, data.password);
       // Redirect is handled by auth context
     } catch (err) {
-      debugger;
-
       setError(err.message || 'Failed to login. Please try again.');
     } finally {
-      debugger;
-
       setIsLoading(false);
     }
-    debugger;
   };
 
   console.log('Login page useForm register', register);
@@ -60,7 +53,11 @@ const Login = () => {
         <div className={styles['login-box']}>
           {/* Header */}
           <div className={styles.header}>
-            <img className={styles.logo} src="/assets/LoginPageLogo.png" alt="Logo" />
+            <img
+              className={styles.logo}
+              src="/assets/LoginPageLogo.png"
+              alt="Logo"
+            />
             <h2 className={styles.title}>Welcome</h2>
             <p className={styles.subtitle}>
               Don't have an account? <Link to="/register">Sign up</Link>

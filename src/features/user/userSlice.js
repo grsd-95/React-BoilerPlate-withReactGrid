@@ -10,7 +10,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      debugger
+      
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
     },
