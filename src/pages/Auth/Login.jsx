@@ -59,9 +59,9 @@ const Login = () => {
               alt="Logo"
             />
             <h2 className={styles.title}>Welcome</h2>
-            <p className={styles.subtitle}>
+            {/* <p className={styles.subtitle}>
               Don't have an account? <Link to="/register">Sign up</Link>
-            </p>
+            </p> */}
           </div>
 
           {/* Form */}
