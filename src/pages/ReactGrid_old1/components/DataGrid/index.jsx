@@ -11,12 +11,6 @@ import DataRow from './DataRow';
 import GroupAggregates from './GroupAggregates';
 import FilterInput from './FilterInput';
 import './style.scss';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import { useDebounce } from '../../../../hooks/useDebounce';
-import { stripTags } from '../../../../libs/dompurify';
-import ExcelJS from 'exceljs';
-import { saveAs } from 'file-saver';
 
 const DataGrid = ({
   data = [],
@@ -44,7 +38,6 @@ const DataGrid = ({
   const [groupBy, setGroupBy] = useState([]);
   const [selectedRows, setSelectedRows] = useState(new Set());
   const [editingCell, setEditingCell] = useState(null);
-  const [searchInput, setSearchInput] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedGroups, setExpandedGroups] = useState(new Set());
   const [columnWidths, setColumnWidths] = useState({});
@@ -54,8 +47,7 @@ const DataGrid = ({
     if (actionsIndex > -1) {
       const reordered = [...baseColumns];
       reordered.splice(actionsIndex, 1);
-      // reordered.splice(0, 0, 'actions');
-      reordered.unshift('actions');
+      reordered.splice(1, 0, 'actions');
       return reordered;
     }
     return baseColumns;
@@ -65,49 +57,15 @@ const DataGrid = ({
   const [isDraggingToGroup, setIsDraggingToGroup] = useState(false);
   const [groupDropZoneActive, setGroupDropZoneActive] = useState(false);
 
+  const headerRefs = useRef({});
+
   const [filterPopup, setFilterPopup] = useState({
     isOpen: false,
     field: null,
     rect: null,
   });
   const [openMenuField, setOpenMenuField] = useState(null);
-  const headerRefs = useRef({});
   const popupRef = useRef(null);
-  const abortSearchRef = useRef(null);
-
-  const debouncedSearch = useDebounce((value) => {
-    setSearchTerm(value);
-  }, 400);
-  //   const debouncedSearchFromAPI = useDebounce(async (value) => {
-  //   try {
-  //     if (abortSearchRef.current) {
-  //       abortSearchRef.current.abort();
-  //     }
-
-  //     const controller = new AbortController();
-  //     abortSearchRef.current = controller;
-
-  //     const response = await fetch(`/api/employees?search=${value}`, {
-  //       signal: controller.signal,
-  //     });
-
-  //     const result = await response.json();
-
-  //     setData(result);
-  //   } catch (err) {
-  //     if (err.name === 'AbortError') {
-  //       return;
-  //     }
-  //     console.error(err);
-  //   }
-  // }, 400);
-  // useEffect(() => {
-  //   return () => {
-  //     if (abortSearchRef.current) {
-  //       abortSearchRef.current.abort();
-  //     }
-  //   };
-  // }, []);
 
   useEffect(() => {
     const onDocClick = (e) => {
@@ -120,12 +78,6 @@ const DataGrid = ({
     document.addEventListener('click', onDocClick);
     return () => document.removeEventListener('click', onDocClick);
   }, []);
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setSearchInput(value); // instant UI update
-    debouncedSearch(value); // delayed filtering
-  };
 
   const MIN_COLUMN_WIDTH = 80;
 
@@ -141,21 +93,11 @@ const DataGrid = ({
     let result = [...data];
 
     if (searchTerm) {
-      const searchWords = String(searchTerm.trim())
-        .toLowerCase()
-        .split(' ')
-        .filter((word) => word.length > 0);
-
-      result = result.filter((row) => {
-        if (searchWords.length === 0) return true;
-
-        // Check if ALL search words are found in the row (in any field)
-        return searchWords.every((word) =>
-          Object.values(row).some((value) =>
-            String(value).toLowerCase().includes(word)
-          )
-        );
-      });
+      result = result.filter((row) =>
+        Object.values(row).some((value) =>
+          String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     }
 
     Object.entries(filters).forEach(([field, filterValue]) => {
@@ -385,25 +327,18 @@ const DataGrid = ({
     [allowSelection, paginatedData]
   );
 
-  const sanitizeValue = useCallback((value) => {
-    if (typeof value === 'string') {
-      return stripTags(value);
-    }
-    return value;
-  }, []);
-
   const handleCellEdit = useCallback(
     (rowId, field, value) => {
       if (!allowEditing) return;
 
       const newData = data.map((row) =>
-        row.id === rowId ? { ...row, [field]: sanitizeValue(value) } : row
+        row.id === rowId ? { ...row, [field]: value } : row
       );
 
       onDataChange?.(newData);
       setEditingCell(null);
     },
-    [allowEditing, data, onDataChange, sanitizeValue]
+    [allowEditing, data, onDataChange]
   );
 
   const handleBulkStatusUpdate = useCallback(
@@ -438,167 +373,70 @@ const DataGrid = ({
         .filter((col) => col.field !== 'actions');
 
       if (format === 'csv') {
-        const BOM = '\uFEFF'; // important for Excel + encoding
-
         const csvContent = [
-          exportColumns.map((col) => `"${stripTags(col.title)}"`).join(','),
+          exportColumns.map((col) => col.title).join(','),
           ...exportData.map((row) =>
             exportColumns
               .map((col) => {
-                const value = stripTags(row[col.field]?.toString?.() || '');
-                return `"${value.replace(/"/g, '""')}"`; // escape quotes
+                const value = row[col.field];
+                return typeof value === 'string' && value.includes(',')
+                  ? `"${value}"`
+                  : value;
               })
               .join(',')
           ),
         ].join('\n');
 
-        const blob = new Blob([BOM + csvContent], {
-          type: 'text/csv;charset=utf-8;',
-        });
-
+        const blob = new Blob([csvContent], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         a.download = 'data-export.csv';
         a.click();
         URL.revokeObjectURL(url);
-      }
-      // else if (format === 'excel') {
-      //   const excelContent = `
-      //     <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-      //     <head>
-      //       <meta charset="utf-8">
-      //       <meta name="ProgId" content="Excel.Sheet">
-      //       <meta name="Generator" content="Microsoft Excel 15">
-      //       <style>
-      //         table { border-collapse: collapse; width: 100%; }
-      //         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-      //         th { background-color: #f2f2f2; font-weight: bold; }
-      //       </style>
-      //     </head>
-      //     <body>
-      //       <table>
-      //         <thead>
-      //           <tr>
-      //             ${exportColumns.map((col) => `<th>${col.title}</th>`).join('')}
-      //           </tr>
-      //         </thead>
-      //         <tbody>
-      //           ${exportData
-      //             .map(
-      //               (row) =>
-      //                 `<tr>${exportColumns.map((col) => `<td>${row[col.field] || ''}</td>`).join('')}</tr>`
-      //             )
-      //             .join('')}
-      //         </tbody>
-      //       </table>
-      //     </body>
-      //     </html>
-      //   `;
+      } else if (format === 'excel') {
+        const excelContent = `
+          <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+          <head>
+            <meta charset="utf-8">
+            <meta name="ProgId" content="Excel.Sheet">
+            <meta name="Generator" content="Microsoft Excel 15">
+            <style>
+              table { border-collapse: collapse; width: 100%; }
+              th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+              th { background-color: #f2f2f2; font-weight: bold; }
+            </style>
+          </head>
+          <body>
+            <table>
+              <thead>
+                <tr>
+                  ${exportColumns.map((col) => `<th>${col.title}</th>`).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${exportData
+                  .map(
+                    (row) =>
+                      `<tr>${exportColumns.map((col) => `<td>${row[col.field] || ''}</td>`).join('')}</tr>`
+                  )
+                  .join('')}
+              </tbody>
+            </table>
+          </body>
+          </html>
+        `;
 
-      //   const blob = new Blob([excelContent], {
-      //     type: 'application/vnd.ms-excel',
-      //   });
-      //   const url = URL.createObjectURL(blob);
-      //   const a = document.createElement('a');
-      //   a.href = url;
-      //   a.download = 'data-export.xls';
-      //   a.click();
-      //   URL.revokeObjectURL(url);
-      // }
-      // else if (format === 'excel') {
-      //   const data = exportData.map((row) => {
-      //     const obj = {};
-      //     exportColumns.forEach((col) => {
-      //       obj[col.title] = stripTags(row[col.field]?.toString?.() || '');
-      //     });
-      //     return obj;
-      //   });
-
-      //   const worksheet = XLSX.utils.json_to_sheet(data);
-      //   const workbook = XLSX.utils.book_new();
-      //   XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-
-      //   XLSX.writeFile(workbook, 'data-export.xlsx');
-      // }
-
-      //  else if (format === 'excel') {
-      //   const workbook = new ExcelJS.Workbook();
-      //   const worksheet = workbook.addWorksheet('Data');
-
-      //   // Headers
-      //   const headers = exportColumns.map((col) => stripTags(col.title));
-      //   const headerRow = worksheet.addRow(headers);
-
-      //   // ✅ Make each header cell bold (IMPORTANT FIX)
-      //   headerRow.eachCell((cell) => {
-      //     cell.font = { bold: true };
-      //   });
-
-      //   // Data
-      //   exportData.forEach((row) => {
-      //     const rowData = exportColumns.map((col) =>
-      //       stripTags(row[col.field]?.toString?.() || '')
-      //     );
-      //     worksheet.addRow(rowData);
-      //   });
-
-      //   // Auto width (better version)
-      //   worksheet.columns = headers.map((header) => ({
-      //     header,
-      //     key: header,
-      //     width: 20,
-      //   }));
-
-      //   // Download
-      //   workbook.xlsx.writeBuffer().then((buffer) => {
-      //     saveAs(new Blob([buffer]), 'data-export.xlsx');
-      //   });
-      // }
-      else if (format === 'excel') {
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Data');
-
-        // Headers
-        const headers = exportColumns.map((col) => stripTags(col.title));
-        const headerRow = worksheet.addRow(headers);
-
-        // Bold header
-        headerRow.eachCell((cell) => {
-          cell.font = { bold: true };
+        const blob = new Blob([excelContent], {
+          type: 'application/vnd.ms-excel',
         });
-
-        // Data
-        exportData.forEach((row) => {
-          const rowData = exportColumns.map((col) =>
-            stripTags(row[col.field]?.toString?.() || '')
-          );
-          worksheet.addRow(rowData);
-        });
-
-        // Enable filter on header
-        worksheet.autoFilter = {
-          from: {
-            row: 1,
-            column: 1,
-          },
-          to: {
-            row: 1,
-            column: headers.length,
-          },
-        };
-
-        // Column width
-        worksheet.columns.forEach((column) => {
-          column.width = 20;
-        });
-        worksheet.views = [{ state: 'frozen', ySplit: 1 }];
-
-        // Download
-        workbook.xlsx.writeBuffer().then((buffer) => {
-          saveAs(new Blob([buffer]), 'data-export.xlsx');
-        });
-      } else if (format === 'pdf1') {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data-export.xls';
+        a.click();
+        URL.revokeObjectURL(url);
+      } else if (format === 'pdf') {
         const printWindow = window.open('', '_blank');
         const htmlContent = `
           <!DOCTYPE html>
@@ -610,123 +448,87 @@ const DataGrid = ({
                 size: A4 landscape;
                 margin: 0.5in;
               }
-
-              body {
-                font-family: Arial, sans-serif;
+              
+              body { 
+                font-family: Arial, sans-serif; 
                 margin: 0;
                 padding: 20px;
                 font-size: 10px;
                 line-height: 1.2;
               }
-
+              
               .header {
                 text-align: center;
                 margin-bottom: 20px;
                 border-bottom: 2px solid #333;
                 padding-bottom: 10px;
               }
-
+              
               .header h1 {
                 margin: 0;
                 font-size: 18px;
                 color: #333;
               }
-
-              .preview-only {
-                display: inline;
+              
+              .export-info {
+                margin: 10px 0;
+                color: #666;
+                font-size: 9px;
               }
-
-              @media print {
-                body { margin: 0; }
-                .no-print { display: none !important; }
-                .preview-actions { display: none !important; }
-                .preview-only { display: none !important; }
-                table { font-size: 8px; }
-                th, td { padding: 4px 2px; }
-              }
-
-              .preview-actions {
-                margin-bottom: 16px;
-                text-align: center;
-              }
-
-              .download-pdf {
-                display: inline-block;
-                padding: 10px 18px;
-                font-size: 12px;
-                color: #fff;
-                background-color: #007bff;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-              }
-
-              .download-pdf:hover {
-                background-color: #0069d9;
-              }
-
-              table {
-                border-collapse: collapse;
-                width: 100%;
+              
+              table { 
+                border-collapse: collapse; 
+                width: 100%; 
                 margin-top: 10px;
                 page-break-inside: auto;
               }
-
+              
               thead {
                 display: table-header-group;
               }
-
+              
               tbody {
                 display: table-row-group;
               }
-
+              
               tr {
                 page-break-inside: avoid;
                 page-break-after: auto;
               }
-
-              th, td {
-                border: 1px solid #ddd;
-                padding: 6px 4px;
-                text-align: left;
+              
+              th, td { 
+                border: 1px solid #ddd; 
+                padding: 6px 4px; 
+                text-align: left; 
                 font-size: 9px;
                 word-wrap: break-word;
                 max-width: 120px;
               }
-
-              th {
-                background-color: #f2f2f2;
+              
+              th { 
+                background-color: #f2f2f2; 
                 font-weight: bold;
                 font-size: 10px;
               }
-
-              tr:nth-child(even) {
-                background-color: #f9f9f9;
+              
+              tr:nth-child(even) { 
+                background-color: #f9f9f9; 
               }
-
+              
               @media print {
                 body { margin: 0; }
-                .no-print { display: none !important; }
-                .preview-actions { display: none !important; }
+                .no-print { display: none; }
                 table { font-size: 8px; }
                 th, td { padding: 4px 2px; }
               }
             </style>
-            <script>
-              function handleDownloadClick() {
-                window.print();
-              }
-            </script>
           </head>
           <body>
             <div class="header">
-              <h1>Data Export<span class="preview-only"> Preview</span></h1>
+              <h1>Data Export</h1>
               <div class="export-info">
                 <p>Export Date: ${new Date().toLocaleDateString()} | Total Records: ${exportData.length}${selectedRows.size > 0 ? ' (Selected Records)' : ''}</p>
               </div>
-            </div>
-            <div class="preview-actions no-print">
-              <button class="download-pdf" onclick="handleDownloadClick()">Print / Download PDF</button>
             </div>
             <table>
               <thead>
@@ -749,49 +551,11 @@ const DataGrid = ({
 
         printWindow.document.write(htmlContent);
         printWindow.document.close();
-        printWindow.focus();
-      } else if (format === 'pdf2') {
-        const doc = new jsPDF({
-          orientation: 'landscape',
-          unit: 'pt',
-          format: 'a4',
-        });
 
-        // Header
-        doc.setFontSize(16);
-        doc.text('Data Export', 40, 30);
-
-        doc.setFontSize(10);
-        doc.text(
-          `Export Date: ${new Date().toLocaleDateString()} | Total Records: ${exportData.length}${
-            selectedRows.size > 0 ? ' (Selected Records)' : ''
-          }`,
-          40,
-          50
-        );
-
-        // Table
-        autoTable(doc, {
-          startY: 70,
-          head: [exportColumns.map((col) => stripTags(col.title))],
-          body: exportData.map((row) =>
-            exportColumns.map((col) =>
-              stripTags(row[col.field]?.toString?.() || '')
-            )
-          ),
-          styles: {
-            fontSize: 8,
-          },
-          headStyles: {
-            fillColor: [240, 240, 240],
-            textColor: [0, 0, 0],
-            fontStyle: 'bold',
-          },
-          theme: 'grid',
-        });
-
-        // Download
-        doc.save('Data_Export.pdf');
+        setTimeout(() => {
+          printWindow.print();
+          printWindow.close();
+        }, 250);
       }
     },
     [allowExport, filteredData, selectedRows, columns, columnOrder]
@@ -1136,7 +900,7 @@ const DataGrid = ({
               onClick={() => handleExport('csv')}
             >
               <span className="data-grid__btn-icon">📄</span>
-              Export CSV
+              Export CSV TSV
               {selectedRows.size > 0 ? ` (${selectedRows.size})` : ''}
             </button>
             <button
@@ -1149,19 +913,10 @@ const DataGrid = ({
             </button>
             <button
               className="data-grid__btn data-grid__btn--secondary"
-              onClick={() => handleExport('pdf1')}
+              onClick={() => handleExport('pdf')}
             >
               <span className="data-grid__btn-icon">📋</span>
-              Preview and Export PDF
-              {selectedRows.size > 0 ? ` (${selectedRows.size})` : ''}
-            </button>
-            <button
-              className="data-grid__btn data-grid__btn--secondary"
-              onClick={() => handleExport('pdf2')}
-            >
-              <span className="data-grid__btn-icon">📋</span>
-              Export PDF
-              {selectedRows.size > 0 ? ` (${selectedRows.size})` : ''}
+              Export PDF{selectedRows.size > 0 ? ` (${selectedRows.size})` : ''}
             </button>
           </div>
         </div>
@@ -1170,33 +925,10 @@ const DataGrid = ({
             <input
               type="text"
               placeholder="Search..."
-              // value={searchTerm}
-              value={searchInput}
-              onChange={handleSearchChange}
-              // onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="data-grid__search-input"
             />
-            {/* {searchTerm && (
-              <span
-                className="data-grid__search-clear"
-                onClick={() => setSearchTerm('')}
-                title="Clear"
-              >
-                ✖
-              </span>
-            )} */}
-            {searchInput && (
-              <span
-                className="data-grid__search-clear"
-                onClick={() => {
-                  setSearchInput('');
-                  setSearchTerm('');
-                }}
-              >
-                ✖
-              </span>
-            )}
-
             <span className="data-grid__search-icon">🔍</span>
           </div>
         </div>
@@ -1259,7 +991,7 @@ const DataGrid = ({
           <thead className="data-grid__header">
             <tr>
               {allowSelection && (
-                <th
+                <th 
                   className="data-grid__header-cell data-grid__header-cell--checkbox"
                   draggable="false"
                 >
@@ -1411,7 +1143,7 @@ const DataGrid = ({
               })}
             </tr>
 
-            {/* {allowFiltering && (
+            {allowFiltering && (
               <tr className="data-grid__filter-row">
                 {allowSelection && <th className="data-grid__filter-cell"></th>}
                 {columnOrder.map((field) => {
@@ -1427,7 +1159,7 @@ const DataGrid = ({
                   );
                 })}
               </tr>
-            )} */}
+            )}
           </thead>
 
           <tbody className="data-grid__body">

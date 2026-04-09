@@ -1,35 +1,23 @@
 import { useState } from 'react';
-import { showAlert } from '../../common-components/Alert';
-import { sanitizeHtml } from '../../libs/dompurify';
 import DataGrid from './components/DataGrid';
 import FormModal from './components/FormModal';
 import './style.scss';
 import { columns, sampleData } from './DummyData';
-import SEOHelmet from '../../common/SEO/SEOHelmet';
 
-const formatJoinDate = (value) => {
-  if (!value) return '';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return value;
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
-};
-
-const Tasks = () => {
+const ReactGrid = () => {
   const [data, setData] = useState(sampleData);
   const [viewPopup, setViewPopup] = useState({ isOpen: false, data: null });
   const [editPopup, setEditPopup] = useState({ isOpen: false, data: null });
   const [addPopup, setAddPopup] = useState({ isOpen: false });
 
+  // Define form fields for add/edit modal
   const formFields = [
     {
       name: 'name',
       label: 'Employee Name',
       type: 'text',
       placeholder: 'Enter employee name',
-      required: true,
+      required: true
     },
     {
       name: 'age',
@@ -38,7 +26,7 @@ const Tasks = () => {
       placeholder: 'Enter age',
       required: true,
       min: 18,
-      max: 100,
+      max: 100
     },
     {
       name: 'department',
@@ -49,8 +37,8 @@ const Tasks = () => {
       options: [
         { value: 'Engineering', label: 'Engineering' },
         { value: 'Marketing', label: 'Marketing' },
-        { value: 'HR', label: 'HR' },
-      ],
+        { value: 'HR', label: 'HR' }
+      ]
     },
     {
       name: 'salary',
@@ -59,13 +47,13 @@ const Tasks = () => {
       placeholder: 'Enter salary',
       required: true,
       min: 0,
-      helpText: 'Enter annual salary in numbers',
+      helpText: 'Enter annual salary in numbers'
     },
     {
       name: 'joinDate',
       label: 'Join Date',
       type: 'date',
-      required: true,
+      required: true
     },
     {
       name: 'status',
@@ -74,9 +62,9 @@ const Tasks = () => {
       required: true,
       options: [
         { value: 'Active', label: 'Active' },
-        { value: 'Inactive', label: 'Inactive' },
-      ],
-    },
+        { value: 'Inactive', label: 'Inactive' }
+      ]
+    }
   ];
 
   const handleDataChange = (newData) => {
@@ -101,25 +89,15 @@ const Tasks = () => {
   };
 
   const handleEditSave = (updatedData) => {
-    const safeData = Object.fromEntries(
-      Object.entries(updatedData).map(([key, value]) => [
-        key,
-        typeof value === 'string' ? sanitizeHtml(value) : value,
-      ])
-    );
-
     const newData = data.map((row) =>
-      row.id === safeData.id
-        ? {
-            ...safeData,
-            age: Number(safeData.age),
-            salary: Number(safeData.salary),
-          }
-        : row
+      row.id === updatedData.id ? { 
+        ...updatedData,
+        age: Number(updatedData.age),
+        salary: Number(updatedData.salary)
+      } : row
     );
     setData(newData);
     setEditPopup({ isOpen: false, data: null });
-    showAlert('success', 'Employee details updated successfully.');
   };
 
   const handleEditCancel = () => {
@@ -135,25 +113,17 @@ const Tasks = () => {
   };
 
   const handleAddSave = (newEmployee) => {
-    const safeEmployee = Object.fromEntries(
-      Object.entries(newEmployee).map(([key, value]) => [
-        key,
-        typeof value === 'string' ? sanitizeHtml(value) : value,
-      ])
-    );
-
     const maxId = Math.max(...data.map((item) => item.id), 0);
-    const employeeWithId = {
-      ...safeEmployee,
+    const employeeWithId = { 
+      ...newEmployee, 
       id: maxId + 1,
-      age: Number(safeEmployee.age),
-      salary: Number(safeEmployee.salary),
+      age: Number(newEmployee.age),
+      salary: Number(newEmployee.salary)
     };
     console.log('Adding new employee:', employeeWithId);
     const newData = [employeeWithId, ...data];
     setData(newData);
     setAddPopup({ isOpen: false });
-    showAlert('success', 'New employee added successfully.');
   };
 
   const handleAddCancel = () => {
@@ -161,19 +131,14 @@ const Tasks = () => {
   };
 
   return (
-    <div className="tasks">
-      <SEOHelmet
-        title="Grid"
-        description="Manage your featured grid with our CRUD application"
-        keywords="Grid, Table, crud"
-      />
-        <div className="Reactgrid__header">
-          <div>React Data Grid Demo</div>
-          <p>
-            A feature-rich data grid component with sorting, filtering,
-            grouping, and more!
-          </p>
-        </div>
+    <div className="app">
+      <div className="app__header">
+        <h1>React Data Grid Demo</h1>
+        <p>
+          A feature-rich data grid component with sorting, filtering, grouping,
+          and more!
+        </p>
+      </div>
 
       <div className="app__content">
         <DataGrid
@@ -225,7 +190,7 @@ const Tasks = () => {
               </div>
               <div className="detail-row">
                 <label>Join Date:</label>
-                <span>{formatJoinDate(viewPopup.data?.joinDate)}</span>
+                <span>{viewPopup.data?.joinDate}</span>
               </div>
               <div className="detail-row">
                 <label>Status:</label>
@@ -265,4 +230,4 @@ const Tasks = () => {
   );
 };
 
-export default Tasks;
+export default ReactGrid;

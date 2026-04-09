@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { sanitizeHtml } from '../../../../libs/dompurify';
 import './style.scss';
 
 const FormModal = ({ 
@@ -66,13 +65,7 @@ const FormModal = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const sanitizedData = Object.fromEntries(
-        Object.entries(formData).map(([key, value]) => [
-          key,
-          typeof value === 'string' ? sanitizeHtml(value) : value,
-        ])
-      );
-      onSave(sanitizedData);
+      onSave(formData);
     }
   };
 

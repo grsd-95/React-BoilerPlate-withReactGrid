@@ -140,6 +140,13 @@ export const sampleData = [
 // Column configuration
 export const columns = [
   {
+    field: 'name',
+    title: 'Employee Name',
+    width: 150,
+    type: 'text',
+    groupable: true,
+  },
+  {
     field: 'actions',
     title: 'Actions',
     width: 120,
@@ -147,13 +154,6 @@ export const columns = [
     sortable: false,
     filterable: false,
     groupable: false,
-  },
-  {
-    field: 'name',
-    title: 'Employee Name',
-    width: 150,
-    type: 'text',
-    groupable: true,
   },
   {
     field: 'age',
@@ -188,15 +188,6 @@ export const columns = [
     width: 120,
     type: 'date',
     groupable: true,
-    render: (value) => {
-      if (!value) return '';
-      const date = new Date(value);
-      if (Number.isNaN(date.getTime())) return value;
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
-    },
   },
   {
     field: 'status',
