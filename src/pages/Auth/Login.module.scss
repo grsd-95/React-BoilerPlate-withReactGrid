@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 @use '../../styles/variables' as *;
 @use '../../styles/mixins' as *;
 
@@ -19,19 +19,19 @@
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
 
   .logo {
-    height: 48px;
+    height: 16vh;
     width: auto;
     margin: 0 auto;
+    transform: scale(2);
   }
 
   .title {
-    margin: 1.5rem 0 0.5rem;
     font-size: 2rem;
     font-weight: 700;
     color: var(--text-primary);
+    margin-bottom: 0 !important;
   }
 
   .subtitle {
@@ -72,7 +72,9 @@
       border: 1px solid var(--border-color);
       border-radius: 4px;
       font-size: 1rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 
       &:focus {
         outline: none;
@@ -105,7 +107,7 @@
   align-items: center;
   gap: 0.5rem;
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     width: 1rem;
     height: 1rem;
     border: 1px solid var(--border-color);
@@ -176,6 +178,13 @@
     margin-right: 0.5rem;
     animation: spin 1s linear infinite;
   }
+}
+
+.login-note {
+  margin-top: 1vh;
+  font-size: calc(1vh + 0.5vw);
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .divider {

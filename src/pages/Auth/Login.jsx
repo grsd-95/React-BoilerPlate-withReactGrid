@@ -60,8 +60,8 @@ const Login = () => {
         <div className={styles['login-box']}>
           {/* Header */}
           <div className={styles.header}>
-            <img className={styles.logo} src="/logo.svg" alt="Your Logo" />
-            <h2 className={styles.title}>Welcome back</h2>
+            <img className={styles.logo} src="/assets/LoginPageLogo.png" alt="Logo" />
+            <h2 className={styles.title}>Welcome</h2>
             <p className={styles.subtitle}>
               Don't have an account? <Link to="/register">Sign up</Link>
             </p>
@@ -110,9 +110,9 @@ const Login = () => {
                 <label htmlFor="remember-me">Remember me</label>
               </div>
 
-              <Link to="/forgot-password" className={styles['forgot-password']}>
+              {/* <Link to="/forgot-password" className={styles['forgot-password']}>
                 Forgot your password?
-              </Link>
+              </Link> */}
             </div>
 
             {/* Error Message */}
@@ -167,6 +167,9 @@ const Login = () => {
                 'Sign in'
               )}
             </button>
+            <div className={styles['login-note']}>
+              Note: Please login with random credentials for demo purposes.
+            </div>
           </form>
 
           {/* Social Login Options */}

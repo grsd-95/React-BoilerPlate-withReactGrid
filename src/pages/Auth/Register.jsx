@@ -76,7 +76,7 @@ const Register = () => {
           <div className={styles.header}>
             <img
               className={styles.logo}
-              src="/logo.svg"
+              src="/assets/LoginPageLogo.png"
               alt="Your Logo"
             />
             <h2 className={styles.title}>
