@@ -34,7 +34,7 @@ export const Header = () => {
             <div className={styles.userInfo}>
               Welcome, {user.name || 'User'}
             </div>
-            <Link to="/profile" className={styles.navLink}>Profile</Link>
+            {/* <Link to="/profile" className={styles.navLink}>Profile</Link> */}
             <button 
               onClick={handleLogout}
               className={`${styles.logoutButton} ${isLoading ? styles.loading : ''}`}
