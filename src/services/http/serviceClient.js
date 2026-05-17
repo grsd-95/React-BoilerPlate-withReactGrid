@@ -2,7 +2,7 @@ import axiosInstance from "./axiosConfig";
 import fetchClient from "./fetchConfig";
 import { loadingStore } from "./LoadingStore";
 
-// 🔥 Track in-flight requests (for auto-cancel)
+// Track in-flight requests (for auto-cancel)
 // Map<requestKey, { abort: Function, route: string }>
 const pendingRequests = new Map();
 
@@ -33,18 +33,18 @@ class HttpService {
       onError,
       baseURL,
       showLoader = true,
-      cancelPrevious = true,   // 🔁 auto-cancel same API by default
+      cancelPrevious = true,   // auto-cancel same API by default
       requestKey,              // optional custom key
       ...rest
     } = {}
   ) {
     const finalBaseURL = this.resolveBaseURL(baseURL);
 
-    // 🔑 Create request identity
+    // Create request identity
     const key =
       requestKey || `${method}:${finalBaseURL}${url}`;
 
-    // 🔥 Cancel previous same request
+    // Cancel previous same request
     if (cancelPrevious && pendingRequests.has(key)) {
       const prev = pendingRequests.get(key);
       prev.abort(); // cancel old request
@@ -81,7 +81,7 @@ class HttpService {
       onSuccess?.(res.data);
       return res.data;
     } catch (err) {
-      // 🟡 Ignore cancelled requests (fetch AbortError or axios cancellation)
+      // Ignore cancelled requests (fetch AbortError or axios cancellation)
       const isFetchAbort = err?.name === 'AbortError';
       const isAxiosCancel = err?.code === 'ERR_CANCELED' || err?.name === 'CanceledError' || err?.message === 'canceled';
 
@@ -158,7 +158,7 @@ class HttpService {
     });
   }
 
-  // 📥 File download
+  // File download
   download(url, payload, options = {}) {
     return this.execute("post", url, {
       ...options,
