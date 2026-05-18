@@ -35,11 +35,11 @@
   }
 
   &.danger {
-    background-color: #dc3545;
+    background-color: var(--error-color);
     color: white;
 
     &:hover:not(:disabled) {
-      background-color: #c82333;
+      background-color: var(--danger-text);
     }
   }
 

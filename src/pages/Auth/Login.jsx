@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import SEOHelmet from '../../common/SEO/SEOHelmet';
 import { useAuth } from '../../common/contexts/AuthContext';
+import ThemeToggle from '../../common-components/ThemeToggle';
 import styles from './Login.module.scss';
 
 // Login form validation schema
@@ -50,6 +51,9 @@ const Login = () => {
     <>
       <SEOHelmet title="Login" description="Login to access your account" />
       <div className={styles['login-container']}>
+        <div className={styles.themeToggleWrapper}>
+          <ThemeToggle />
+        </div>
         <div className={styles['login-box']}>
           {/* Header */}
           <div className={styles.header}>

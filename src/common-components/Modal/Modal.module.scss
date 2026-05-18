@@ -13,9 +13,10 @@
 }
 
 .modal {
-  background-color: white;
+  background-color: var(--surface-primary);
+  color: var(--text-primary);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   max-height: 90vh;
   overflow-y: auto;
 
@@ -40,7 +41,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
 
   h2 {
     margin: 0;
@@ -55,10 +56,10 @@
   cursor: pointer;
   padding: 0.5rem;
   line-height: 1;
-  color: #666;
+  color: var(--text-secondary);
 
   &:hover {
-    color: #333;
+    color: var(--text-primary);
   }
 }
 

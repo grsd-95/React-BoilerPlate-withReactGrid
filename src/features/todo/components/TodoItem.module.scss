@@ -5,8 +5,8 @@
   align-items: center;
   padding: 1rem;
   margin-bottom: 0.75rem;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
+  background-color: var(--surface-primary);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   transition: all 0.2s ease-in-out;
 
@@ -17,12 +17,12 @@
 
   &.completed {
     opacity: 0.7;
-    background-color: #f5f5f5;
+    background-color: var(--surface-secondary);
 
     .todoText {
       .title {
         text-decoration: line-through;
-        color: #6c757d;
+        color: var(--text-secondary);
       }
     }
   }
@@ -40,6 +40,7 @@
   height: 1.25rem;
   cursor: pointer;
   accent-color: #007bff;
+  accent-color: var(--primary-color);
 }
 
 .todoText {
@@ -49,13 +50,13 @@
     margin: 0;
     font-size: 1rem;
     font-weight: 500;
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 0.25rem;
   }
 
   .userId {
     font-size: 0.875rem;
-    color: #6c757d;
+    color: var(--text-secondary);
   }
 }
 

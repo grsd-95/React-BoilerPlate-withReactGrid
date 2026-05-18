@@ -1,8 +1,6 @@
 @use "sass:color";
 :root {
   --header-height: 64px;
-  --primary-color: #0066cc;
-  --primary-color-dark: #0052a3;
 }
 
 .header {
@@ -12,7 +10,8 @@
   justify-content: space-between;
   padding: 0 2rem;
   background-color: var(--bg-primary);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 1000;
