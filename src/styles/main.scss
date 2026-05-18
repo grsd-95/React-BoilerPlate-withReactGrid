@@ -14,8 +14,28 @@ body {
   font-family: $font-family-base;
   font-size: $font-size-base;
   line-height: $line-height-base;
+  color: var(--text-primary);
+  background: var(--bg-secondary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+a {
+  color: var(--primary-color);
+}
+
+input,
+select,
+textarea {
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color);
 }
 
 // Container
@@ -33,4 +53,204 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
   margin-bottom: $spacing-unit;
+}
+
+// Theme overrides for global SCSS components such as Sidebar and ReactGrid.
+.app-sidebar {
+  background: linear-gradient(135deg, var(--sidebar-bg) 0%, var(--sidebar-bg-strong) 100%) !important;
+  color: var(--sidebar-text) !important;
+}
+
+.app-sidebar-header,
+.app-sidebar-footer {
+  border-color: var(--sidebar-border) !important;
+}
+
+.app-nav-item,
+.app-nav-group-header {
+  color: var(--sidebar-text) !important;
+}
+
+.app-nav-item:hover,
+.app-nav-group-header:hover,
+.app-nav-children a:hover {
+  background: var(--sidebar-hover-bg) !important;
+}
+
+.app-nav-item.active {
+  background-color: var(--primary-color-light) !important;
+}
+
+.app-nav-children {
+  border-color: var(--sidebar-border) !important;
+}
+
+.app-nav-children a.active {
+  color: var(--sidebar-active) !important;
+}
+
+.tasks,
+.home-container,
+.Dashboard-container {
+  color: var(--text-primary);
+}
+
+.Reactgrid__header div,
+.popup-header h3,
+.detail-row label,
+.form-row label {
+  color: var(--text-primary) !important;
+}
+
+.Reactgrid__header p,
+.detail-row span {
+  color: var(--text-secondary) !important;
+}
+
+.app__content,
+.data-grid,
+.popup-content,
+.form-modal,
+.data-grid__menu-dropdown,
+.data-grid__filter-popup,
+.filter-input__operator-menu {
+  background: var(--surface-primary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.data-grid__toolbar,
+.data-grid__status-bar,
+.data-grid__pager,
+.data-grid__group-footer,
+.group-aggregates {
+  background: var(--surface-secondary) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.data-grid__header-cell,
+.data-grid__filter-row,
+.data-grid__filter-cell {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.data-grid__body,
+.data-grid__body tr,
+.data-row {
+  background: var(--surface-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.data-grid__body tr:nth-child(even),
+.data-row--alternate {
+  background: var(--surface-secondary) !important;
+}
+
+.data-grid__body tr:hover,
+.data-row:hover {
+  background: var(--surface-hover) !important;
+}
+
+.data-grid__body tr.selected,
+.data-row--selected {
+  background: var(--surface-selected) !important;
+}
+
+.data-grid__body td,
+.data-row__cell {
+  color: var(--text-secondary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.data-grid__btn,
+.data-grid__pager-btn,
+.data-row__action-btn,
+.filter-input__field,
+.filter-input__operator-btn,
+.cell-editor__input,
+.form-row input,
+.form-row select {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-strong) !important;
+}
+
+.data-grid__btn:hover,
+.data-grid__pager-btn:hover:not(:disabled),
+.filter-input__operator-btn:hover,
+.filter-input__operator-option:hover,
+.data-grid__menu-dropdown button:hover {
+  background: var(--surface-hover) !important;
+}
+
+.data-grid__btn--primary,
+.data-grid__pager-btn--active,
+.btn--primary,
+.form-modal__btn--submit {
+  background: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--text-inverse) !important;
+}
+
+.status-badge.active {
+  background: var(--success-bg) !important;
+  color: var(--success-text) !important;
+}
+
+.status-badge.inactive {
+  background: var(--danger-bg) !important;
+  color: var(--danger-text) !important;
+}
+
+.notfound-container {
+  background: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.notfound-card {
+  background: var(--surface-primary) !important;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary) !important;
+}
+
+.notfound-card .desc,
+.notfound-card .btn.secondary {
+  color: var(--text-secondary) !important;
+}
+
+.notfound-card .btn.primary {
+  background: var(--primary-color) !important;
+  color: var(--text-inverse) !important;
+}
+
+.notfound-card .btn.secondary {
+  background: transparent !important;
+  border-color: var(--border-strong) !important;
+}
+
+.form-modal__header,
+.form-modal__footer,
+.popup-header,
+.popup-footer {
+  border-color: var(--border-color) !important;
+}
+
+.form-modal__label,
+.form-modal__title,
+.form-modal__close {
+  color: var(--text-primary) !important;
+}
+
+.form-modal__help,
+.form-modal__error {
+  color: var(--text-secondary);
+}
+
+.custom-toast {
+  background: var(--surface-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
 }

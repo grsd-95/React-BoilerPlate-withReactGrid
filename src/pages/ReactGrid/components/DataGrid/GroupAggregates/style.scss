@@ -139,3 +139,21 @@
     }
   }
 }
+
+/* Theme support */
+.group-aggregates {
+  background: var(--surface-secondary);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+
+  &__item {
+    background: var(--surface-primary);
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+
+    &:hover {
+      border-color: var(--primary-color);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+}

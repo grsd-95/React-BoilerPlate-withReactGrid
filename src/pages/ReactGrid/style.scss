@@ -1268,3 +1268,179 @@
   cursor: col-resize !important;
   user-select: none !important;
 }
+
+/* ReactGrid theme support */
+.tasks {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.Reactgrid__header div {
+  color: var(--text-primary);
+}
+
+.Reactgrid__header p {
+  color: var(--text-secondary);
+}
+
+.app__content,
+.data-grid,
+.popup-content {
+  background: var(--surface-primary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.data-grid__toolbar,
+.data-grid__toolbar-left,
+.data-grid__toolbar-right,
+.data-grid__status-bar,
+.data-grid__pager,
+.data-grid__filter-row,
+.data-grid__filter-cell,
+.data-grid__group-footer {
+  background: var(--surface-secondary);
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.data-grid__header-cell {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.data-grid__header-cell:hover:not(.data-grid__header-cell--dragging),
+.data-grid__menu-dropdown button:hover,
+.data-grid__btn:hover,
+.data-grid__pager-btn:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.data-grid__header-cell--grouped,
+.data-grid__group-header,
+.data-grid__group-drop-zone--has-items,
+.data-grid__group-drop-zone--active,
+.data-grid__group-indicator,
+.data-grid__group-tag {
+  background: var(--surface-selected);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.data-grid__header-cell--dragging,
+.data-grid__header-cell--drag-over {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border-color: var(--warning-text);
+}
+
+.data-grid__body,
+.data-grid__body tr {
+  background: var(--surface-primary);
+  color: var(--text-primary);
+}
+
+.data-grid__body tr:nth-child(even) {
+  background-color: var(--surface-secondary);
+}
+
+.data-grid__body tr:hover {
+  background-color: var(--surface-hover);
+}
+
+.data-grid__body tr.selected {
+  background-color: var(--surface-selected) !important;
+}
+
+.data-grid__body td {
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.data-grid__btn,
+.data-grid__pager-btn,
+.data-grid__page-size-select,
+.data-grid__search-input,
+.data-grid__filter-input,
+.data-grid__filter-operator-btn,
+.data-grid__menu-dropdown,
+.data-grid__filter-popup,
+.popup-close,
+.btn,
+.form-row input,
+.form-row select {
+  background: var(--input-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-strong) !important;
+}
+
+.data-grid__btn--primary,
+.data-grid__pager-btn--active,
+.btn--primary,
+.data-grid__group-clear {
+  background: var(--primary-color) !important;
+  color: var(--text-inverse) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.data-grid__btn--success {
+  background: var(--success-bg) !important;
+  color: var(--success-text) !important;
+  border-color: var(--success-text) !important;
+}
+
+.data-grid__btn--warning {
+  background: var(--warning-bg) !important;
+  color: var(--warning-text) !important;
+  border-color: var(--warning-text) !important;
+}
+
+.data-grid__export-group,
+.data-grid__status-group,
+.popup-header,
+.popup-footer {
+  background: var(--surface-secondary);
+  border-color: var(--border-color);
+}
+
+.popup-header h3,
+.detail-row label,
+.form-row label {
+  color: var(--text-primary);
+}
+
+.detail-row,
+.popup-header,
+.popup-footer {
+  border-color: var(--border-color);
+}
+
+.detail-row span,
+.data-grid__status-left,
+.data-grid__status-right {
+  color: var(--text-secondary);
+}
+
+.status-badge.active {
+  background: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-badge.inactive {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+
+.data-grid__container::-webkit-scrollbar-track {
+  background: var(--surface-secondary);
+}
+
+.data-grid__container::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+}
+
+.data-grid__container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}

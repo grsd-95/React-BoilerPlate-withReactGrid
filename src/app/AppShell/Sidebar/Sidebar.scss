@@ -19,6 +19,7 @@ $transition-speed: 0.3s;
   transition: width $transition-speed ease, transform $transition-speed ease;
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--sidebar-border);
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.12);
   z-index: 9999999;
 

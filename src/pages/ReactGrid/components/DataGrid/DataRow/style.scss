@@ -282,3 +282,66 @@
     }
   }
 }
+
+/* Theme support */
+.data-row {
+  color: var(--text-primary);
+
+  &--alternate {
+    background-color: var(--surface-secondary);
+  }
+
+  &:hover {
+    background-color: var(--surface-hover);
+  }
+
+  &--selected {
+    background-color: var(--surface-selected) !important;
+  }
+
+  &__cell {
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+  }
+
+  &__checkbox {
+    accent-color: var(--primary-color);
+    border-color: var(--border-strong);
+    background: var(--input-bg);
+  }
+
+  &__action-btn {
+    border-color: var(--border-strong);
+    background: var(--input-bg);
+    color: var(--text-primary);
+
+    &:hover {
+      box-shadow: var(--shadow-sm);
+      background: var(--surface-hover);
+    }
+
+    &--view {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+
+      &:hover {
+        background: var(--primary-color-light);
+        border-color: var(--primary-color-dark);
+      }
+    }
+
+    &--edit {
+      border-color: var(--warning-text);
+      color: var(--warning-text);
+
+      &:hover {
+        background: var(--warning-bg);
+        border-color: var(--warning-text);
+      }
+    }
+
+    &--toggle {
+      background: transparent;
+    }
+  }
+}

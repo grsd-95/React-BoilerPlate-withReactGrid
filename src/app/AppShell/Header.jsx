@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../common/contexts/AuthContext';
+import ThemeToggle from '../../common-components/ThemeToggle';
 import styles from './Header.module.scss';
 
 export const Header = () => {
@@ -29,6 +30,7 @@ export const Header = () => {
         <Link to="/">Boilerplate App</Link>
       </div>
       <nav className={styles.nav}>
+        <ThemeToggle responsiveCompact />
         {user ? (
           <>
             <div className={styles.userInfo}>

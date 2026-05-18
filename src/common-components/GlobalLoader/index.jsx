@@ -20,7 +20,7 @@ const styles = {
   overlay: {
     position: 'fixed',
     inset: 0,
-    background: 'rgba(0,0,0,.25)',
+    background: 'rgba(0,0,0,.35)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -28,7 +28,9 @@ const styles = {
   },
   box: {
     padding: '12px 18px',
-    background: '#fff',
+    background: 'var(--surface-primary)',
+    color: 'var(--text-primary)',
+    border: '1px solid var(--border-color)',
     borderRadius: 8,
     fontWeight: 600,
   },

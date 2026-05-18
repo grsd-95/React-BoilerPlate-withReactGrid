@@ -9,6 +9,14 @@
   justify-content: center;
   background-color: var(--bg-light);
   padding: 2rem 1rem;
+  position: relative;
+}
+
+.themeToggleWrapper {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 2;
 }
 
 .login-box {
@@ -259,5 +267,10 @@
 
   .social-buttons {
     grid-template-columns: 1fr;
+  }
+
+  .themeToggleWrapper {
+    top: 0.75rem;
+    right: 0.75rem;
   }
 }
