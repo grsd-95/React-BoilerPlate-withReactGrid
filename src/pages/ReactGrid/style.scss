@@ -565,16 +565,16 @@
   border: none;
   cursor: pointer;
   padding: 4px;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 16px;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, color 0.2s ease, background-color 0.2s ease;
   border-radius: 2px;
 }
 
 .data-grid__menu-trigger:hover {
-  color: #1976d2;
-  background: #f0f0f0;
+  color: var(--primary-color);
+  background: var(--surface-secondary);
 }
 
 .data-grid__header-cell:hover .data-grid__menu-trigger {
@@ -585,8 +585,8 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: #fff;
-  border: 1px solid #e0e0e0;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-color);
   border-radius: 4px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
@@ -609,12 +609,12 @@
   text-align: left;
   cursor: pointer;
   font-size: 14px;
-  color: #333;
+  color: var(--text-primary);
   transition: background-color 0.2s ease;
 }
 
 .data-grid__menu-dropdown button:hover {
-  background: #f5f5f5;
+  background: var(--surface-hover);
 }
 
 /* Filter Row */
