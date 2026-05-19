@@ -17,7 +17,7 @@ $transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 .footer {
   background: linear-gradient(135deg, var(--footer-bg) 0%, var(--footer-bg-strong) 100%);
   border-top: 1px solid var(--sidebar-border);
-  padding: 3rem 2rem;
+  padding: 2rem 2rem 2rem 80px;
   min-height: var(--footer-height);
   width: 100%;
   z-index: 10;
